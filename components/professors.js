@@ -5,6 +5,7 @@ const pool = new Pool({
   database: "ratemyprofessor",
   password: "password",
   port: 5432,
+  multipleStatements: true,
 });
 
 const getProfessors = (request, response) => {
@@ -20,7 +21,7 @@ const getProfessorById = (request, response) => {
   const id = parseInt(request.params.id);
 
   pool.query(
-    "SELECT * FROM professors WHERE id = $1",
+    "SELECT * FROM professors, reviews WHERE professors.id = $1 and professors.id = reviews.professor_id",
     [id],
     (error, results) => {
       if (error) {
