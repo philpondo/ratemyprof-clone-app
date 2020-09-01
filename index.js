@@ -27,7 +27,7 @@ app.get('/professors/:id', dbProfessors.getProfessorById);
 app.get('/reviews', dbReviews.getReviews);
 app.get('/reviews/:id', dbReviews.getReviewById);
 app.post('/reviews', dbReviews.createReview);
-// app.put('/reviews/:id', dbReviews.updateReview);
+app.put('/reviews/:id', dbReviews.updateReview);
 // app.delete('/reviews/:id', dbReviews.deleteReview);
 
 app.listen(port, () => {

@@ -40,10 +40,26 @@ const createReview = (request, response) => {
   });
 };
 
+const updateReview = (request, response) => {
+  const id = parseInt(request.params.id);
+  const { professor_id, rating, text } = request.body;
+
+  pool.query(
+    'UPDATE reviews SET professor_id = $1, rating = $2, text = $3 WHERE id = $4',
+    [professor_id, rating, text, id],
+    (error, results) => {
+      if (error) {
+        throw error;
+      }
+      response.status(200).send(`Review modified with ID ${id}`);
+    }
+  );
+};
+
 module.exports = {
   getReviews,
   getReviewById,
   createReview,
-  // updateReview,
+  updateReview,
   // deleteReview,
 };
