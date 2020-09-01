@@ -1,4 +1,4 @@
-const { response } = require('express');
+const { response, request } = require('express');
 
 const Pool = require('pg').Pool;
 const pool = new Pool({
@@ -29,10 +29,21 @@ const getReviewById = (request, response) => {
   });
 };
 
+const createReview = (request, response) => {
+  const { professor_id, rating, text } = request.body;
+
+  pool.query('INSERT INTO reviews (professor_id, rating, text) VALUES ($1, $2, $3)', [professor_id, rating, text], (error, results) => {
+    if (error) {
+      throw error;
+    }
+    response.status(201).send(`User added with ID: #{result.insertID}`);
+  });
+};
+
 module.exports = {
   getReviews,
   getReviewById,
-  // createReview,
+  createReview,
   // updateReview,
   // deleteReview,
-}
+};
