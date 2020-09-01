@@ -24,11 +24,11 @@ app.post("/professors", dbProfessors.createProfessor);
 app.put("/professors/:id", dbProfessors.updateProfessor);
 app.delete("/professors/:id", dbProfessors.deleteProfessor);
 
-// app.get("/reviews", dbReviews.getReviews);
-// app.get("/reviews/:id", dbReviews.getReviewsById);
-// app.post("/reviews", dbReviews.createReviews);
-// app.put("/reviews/:id", dbReviews.updateReviews);
-// app.delete("/reviews/:id", dbReviews.deleteReviews);
+app.get("/reviews", dbReviews.getReviews);
+app.get("/reviews/:id", dbReviews.getReviewById);
+app.post("/reviews", dbReviews.createReview);
+app.put("/reviews/:id", dbReviews.updateReview);
+app.delete("/reviews/:id", dbReviews.deleteReview);
 
 app.listen(port, () => {
   console.log(`App running on port ${port}.`);
