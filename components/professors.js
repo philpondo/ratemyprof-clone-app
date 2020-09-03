@@ -17,19 +17,44 @@ const getProfessors = (request, response) => {
   });
 };
 
+// async needed before request, resoinse if we use try/catch method
 const getProfessorById = (request, response) => {
   const id = parseInt(request.params.id);
 
-  pool.query(
-    "SELECT * FROM professors, reviews WHERE professors.id = $1 and professors.id = reviews.professor_id",
-    [id],
-    (error, results) => {
-      if (error) {
-        throw error;
-      }
-      response.status(200).json(results.rows);
-    }
+  const professorPromise = pool.query(
+    "SELECT * FROM professors WHERE professors.id = $1",
+    [id]
   );
+
+  const reviewPromise = pool.query(
+    "SELECT * FROM reviews WHERE reviews.professor_id = $1",
+    [id]
+  );
+
+  Promise.all([professorPromise, reviewPromise])
+    .then((values) => {
+      const professor = values[0].rows[0];
+      const reviews = values[1].rows;
+      response.json({ professor, reviews });
+    })
+    .catch((error) => {
+      response.status(500).json(error);
+    });
+  // try {
+  //   const professorData = await pool.query(
+  //     "SELECT * FROM professors WHERE professors.id = $1",
+  //     [id]
+  //   );
+  //   const reviewData = await pool.query(
+  //     "SELECT * FROM reviews WHERE reviews.professor_id = $1",
+  //     [id]
+  //   );
+  //   const reviews = reviewData.rows;
+  //   const professor = professorData.rows[0];
+  //   response.json({ professor, reviews });
+  // } catch (error) {
+  //   response.status(500).json(error);
+  // }
 };
 
 const createProfessor = (request, response) => {
