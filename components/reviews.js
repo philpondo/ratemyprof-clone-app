@@ -1,5 +1,5 @@
 const { response, request } = require('express');
-
+// var mysql = require('mysql');
 const Pool = require('pg').Pool;
 const pool = new Pool({
   user: 'me',
@@ -7,6 +7,7 @@ const pool = new Pool({
   database: 'ratemyprofessor',
   password: 'password',
   port: 5432,
+  multipleStatements: true
 });
 
 const getReviews = (request, response) => {
@@ -21,12 +22,39 @@ const getReviews = (request, response) => {
 const getReviewById = (request, response) => {
   const id = parseInt(request.params.id);
 
-  pool.query('SELECT * FROM reviews WHERE id = $1', [id], (error, results) => {
-    if (error) {
-      throw error;
+  pool.query(
+    "SELECT * FROM reviews, professors WHERE reviews.id = $1 and professors.id = reviews.professor_id",
+    [id],
+    (error, results) => {
+      if (error) {
+        throw error;
+      }
+      response.status(200).json(results.rows);
     }
-    response.status(200).json(results.rows);
-  });
+  );
+
+
+
+
+
+  // const reviewPromise = pool.query(
+  //   "SELECT * FROM reviews WHERE reviews.id = $1", [id]
+  // );
+
+  // const professorPromise = pool.query(
+  //   "SELECT * FROM professors WHERE reviews.id.professors_id = professors.id", []
+  // );
+
+  // Promise.all([reviewPromise])
+  //   .then((values) => {
+  //     const reviews = values[0].rows[0];
+  //     const professor = values[1].rows;
+  //     response.json({ reviews, professor });
+  //   })
+  //   .catch((error) => {
+  //     response.status(500).json(error);
+  //   });
+
 };
 
 const createReview = (request, response) => {
