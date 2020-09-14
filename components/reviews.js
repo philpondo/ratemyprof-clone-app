@@ -64,7 +64,7 @@ const createReview = (request, response) => {
     if (error) {
       throw error;
     }
-    response.status(201).send(`User added with ID: #{result.insertID}`);
+    response.status(201).send(`Review added with ID: #{result.insertID}`);
   });
 };
 
