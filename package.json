@@ -9,5 +9,11 @@
     "express": "^4.17.1",
     "mysql": "^2.18.1",
     "pg": "^8.3.3"
+  },
+  "engines": {
+    "node": "14.3.0"
+  },
+  "scripts": {
+    "start": "node server.js"
   }
 }
