@@ -1,14 +1,6 @@
 const { response, request } = require('express');
 // var mysql = require('mysql');
-const Pool = require('pg').Pool;
-const pool = new Pool({
-  user: 'me',
-  host: 'localhost',
-  database: 'ratemyprofessor',
-  password: 'password',
-  port: 5432,
-  multipleStatements: true
-});
+const { pool } = require('../config');
 
 const getReviews = (request, response) => {
   pool.query('SELECT * FROM reviews ORDER BY id ASC', (error, results) => {
