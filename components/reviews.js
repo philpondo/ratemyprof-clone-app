@@ -1,9 +1,9 @@
-const { response, request } = require('express');
+const { response, request } = require("express");
 // var mysql = require('mysql');
-const { pool } = require('../config');
+const { pool } = require("../config");
 
 const getReviews = (request, response) => {
-  pool.query('SELECT * FROM reviews ORDER BY id ASC', (error, results) => {
+  pool.query("SELECT * FROM reviews ORDER BY id ASC", (error, results) => {
     if (error) {
       throw error;
     }
@@ -15,7 +15,7 @@ const getReviewById = (request, response) => {
   const id = parseInt(request.params.id);
 
   pool.query(
-    "SELECT * FROM reviews, professors WHERE reviews.id = $1 and professors.id = reviews.professor_id",
+    "SELECT * FROM reviews WHERE reviews.id = $1",
     [id],
     (error, results) => {
       if (error) {
@@ -25,16 +25,14 @@ const getReviewById = (request, response) => {
     }
   );
 
-
-
-
-
   // const reviewPromise = pool.query(
-  //   "SELECT * FROM reviews WHERE reviews.id = $1", [id]
+  //   "SELECT * FROM reviews WHERE reviews.id = $1",
+  //   [id]
   // );
 
   // const professorPromise = pool.query(
-  //   "SELECT * FROM professors WHERE reviews.id.professors_id = professors.id", []
+  //   "SELECT * FROM professors WHERE professors.id = reviews.professors_id",
+  //   []
   // );
 
   // Promise.all([reviewPromise])
@@ -46,18 +44,21 @@ const getReviewById = (request, response) => {
   //   .catch((error) => {
   //     response.status(500).json(error);
   //   });
-
 };
 
 const createReview = (request, response) => {
   const { professor_id, rating, text } = request.body;
 
-  pool.query('INSERT INTO reviews (professor_id, rating, text) VALUES ($1, $2, $3)', [professor_id, rating, text], (error, results) => {
-    if (error) {
-      throw error;
+  pool.query(
+    "INSERT INTO reviews (professor_id, rating, text) VALUES ($1, $2, $3)",
+    [professor_id, rating, text],
+    (error, results) => {
+      if (error) {
+        throw error;
+      }
+      response.status(201).send(`Review added with ID: #{result.insertID}`);
     }
-    response.status(201).send(`Review added with ID: #{result.insertID}`);
-  });
+  );
 };
 
 const updateReview = (request, response) => {
@@ -65,7 +66,7 @@ const updateReview = (request, response) => {
   const { professor_id, rating, text } = request.body;
 
   pool.query(
-    'UPDATE reviews SET professor_id = $1, rating = $2, text = $3 WHERE id = $4',
+    "UPDATE reviews SET professor_id = $1, rating = $2, text = $3 WHERE id = $4",
     [professor_id, rating, text, id],
     (error, results) => {
       if (error) {
@@ -79,7 +80,7 @@ const updateReview = (request, response) => {
 const deleteReview = (request, response) => {
   const id = parseInt(request.params.id);
 
-  pool.query('DELETE FROM reviews WHERE id = $1', [id], (error, results) => {
+  pool.query("DELETE FROM reviews WHERE id = $1", [id], (error, results) => {
     if (error) {
       throw error;
     }
